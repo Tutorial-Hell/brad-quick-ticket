@@ -54,6 +54,7 @@ export async function createTicket(
   }
 }
 
+// Get all tickets
 export async function getTickets() {
   try {
     const tickets = await prisma.ticket.findMany({
@@ -69,5 +70,27 @@ export async function getTickets() {
   } catch (error) {
     logEvent("Error fetching tickets", "tickets", {}, "error", error);
     return [];
+  }
+}
+
+// Get single ticket page
+export async function getTicketById(id: string) {
+  try {
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!ticket) {
+      logEvent("Ticket Not Found", "ticket", { ticketId: id }, "warning");
+    }
+    return ticket;
+  } catch (error) {
+    logEvent(
+      "Error fetching ticket details",
+      "ticket",
+      { ticketId: id },
+      "error",
+      error
+    );
+    return null;
   }
 }
